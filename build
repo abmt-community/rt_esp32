@@ -1,0 +1,89 @@
+#!/bin/bash
+
+#exit an any error
+set -e
+
+function get_config_var()
+{
+	cat config.json | grep "\"$1\"" | sed -e 's/.*": "//' -e 's/".*//'
+}
+
+
+SKIP=$(cat config.json | grep skip | sed -e "s/.*: //" -e 's/,.*$//')
+if [ "$SKIP" == "true" ]; then
+	exit 0
+fi
+
+
+###################################################
+# create main.h
+###################################################
+NEW_HEADER_HEAD="#ifndef INC_MAIN_H_\n#define INC_MAIN_H_\n\n"
+NEW_HEADER_FOOT="\n\n#include RT_CFG_WIFI_CFG_H\n\n#endif\n"
+
+DEFINES=$( cat config.json | grep '":' | sed -e 's/,$//' -e 's/  "\([a-zA-Z_]*\)":/#define RT_CFG_\U\1/' -e 's/"\([0-9\.]*\)"/\1/' )
+NEW_HEADER=$( echo -e "$NEW_HEADER_HEAD"; echo "$DEFINES"; echo -e "$NEW_HEADER_FOOT" )
+OLD_HEADER=$( cat main.h 2>/dev/null || echo "" )
+
+if [ "$NEW_HEADER" != "$OLD_HEADER" ]; then
+	echo "$NEW_HEADER" > main.h
+fi
+
+###################################################
+# sdkconfig
+###################################################
+SDK_CFG=$(get_config_var sdkcfg)
+if [ "$(readlink -- sdkconfig)" != sdkconfigs/$SDK_CFG ]; then 
+	rm -f sdkconfig
+	rm -rf build_dir
+	ln -s sdkconfigs/$SDK_CFG sdkconfig
+fi
+
+###################################################
+# Compile and flash
+###################################################
+echo '#include "html_files.h"' > html_files.cpp
+echo "std::map<std::string_view, esp_html_file> html_files = {" >> html_files.cpp
+if [ -d ../html ]; then
+	echo found html idr
+	FILES=$(find ../html -type f | sed -n '/^[a-zA-Z0-9\./_-]*$/p')
+	FIRST_FILE=""
+	for i in $FILES; do
+		if [ "$FIRST_FILE" == "" ]; then
+			FIRST_FILE="false"
+			echo -ne "{\""                 >> html_files.cpp;
+		else 
+			echo -ne "}},{\""              >> html_files.cpp;
+		fi
+		echo -n $i | sed -e "s%^../html%%" >> html_files.cpp; 
+		echo -ne "\", (const char[]){ \n"  >> html_files.cpp;
+		gzip -c $i | xxd -i                >> html_files.cpp;
+	done
+	echo "}} };" >> html_files.cpp;
+else
+	echo "no html directory found"
+	echo "};" >> html_files.cpp;
+fi
+
+###################################################
+# Compile and flash
+###################################################
+
+IDF_PATH=$(get_config_var idf_path)
+SERIAL_PORT=$(get_config_var serial_port)
+
+source $IDF_PATH/export.sh
+
+# Remove cache because cmake is to stupid to detect deleted files
+rm -f build_dir/CMakeCache.txt
+
+idf.py -B build_dir build
+
+#mkdir -p build_dir
+#cd build_dir
+#cmake .. -G Ninja
+#ninja
+
+echo flashing: 
+ESPPORT=$SERIAL_PORT idf.py -B build_dir flash
+cd ..

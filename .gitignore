@@ -1,1 +1,3 @@
 wifi_cfg.h
+.hg*
+build-*/
