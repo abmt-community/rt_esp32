@@ -1,10 +1,13 @@
 Install
 =======
-- apt-get install xdd git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1. 
+- Install dependencies: apt-get install xxd git wget flex bison gperf python3 python3-pip python3-venv cmake ninja-build ccache libffi-dev libssl-dev dfu-util 
 - Download latest esp-idf-vx.x.x.zip at https://github.com/espressif/esp-idf/releases/ (not source_code.zip)
 - Extract zip somewere (/opt/esp-idf) and remember folder.
 - call /opt/esp-idf/install.sh
+- Add your user to dailout group (usermod -a -G dailout <username>)
+  (logout or restart maybe requiered)
 - Add this repo and the esp32_nodes repo to your workspace
+- Edit rt_esp32/wifi_cfg.h to setup wifi. 
 
 
 Serial Connection
