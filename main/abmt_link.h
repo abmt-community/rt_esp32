@@ -3,6 +3,7 @@
 
 
 #include <abmt/rt/model.h>
+#include <abmt/mutex.h>
 #include <abmt/io/buffer.h>
 #include "model_adapter_std.h"
 #include "com_device.h"

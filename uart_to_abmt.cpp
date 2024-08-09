@@ -73,8 +73,8 @@ int main(int argc, char* argv[]){
 		};
 
 		while(quit == false){
-				e.wait(100);
-			}
+			e.wait(100);
+		}
 	}catch(abmt::util::bt_exception& e){
 		cout << "An exception occured: " << e.what() << endl;
 		//e.print_backtrace();

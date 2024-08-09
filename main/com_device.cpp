@@ -12,6 +12,7 @@
 #include <functional>
 #include "os.h"
 #include <abmt/io/buffer.h>
+#include <abmt/mutex.h>
 #include "../main.h"
 
 struct dummy_com: public com_device{
@@ -63,15 +64,13 @@ struct esp32_jtag_serial: public com_device{
 #endif
 
 struct esp32_uart: public com_device{
-
 	esp32_uart(){
 	    uart_config_t cfg = {};
-		cfg.baud_rate = 921600;
+		cfg.baud_rate = RT_CFG_SERIAL_BAUDRATE;
 		cfg.data_bits = UART_DATA_8_BITS;
 		cfg.parity    = UART_PARITY_DISABLE;
 		cfg.stop_bits = UART_STOP_BITS_1;
 		cfg.flow_ctrl = UART_HW_FLOWCTRL_DISABLE;
-		cfg.source_clk = UART_SCLK_DEFAULT;
 			
 		ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, 256, 256, 0, NULL, 0));
 		ESP_ERROR_CHECK(uart_param_config(UART_NUM_0, &cfg));
@@ -86,7 +85,8 @@ struct esp32_uart: public com_device{
 		if(len > 256){
 			len = 256;
 		}
-		int bs = uart_write_bytes(UART_NUM_0, (const char *) buff, len);
+
+		int bs = uart_tx_chars(UART_NUM_0, (const char *) buff, len);
 		if(bs > 0){
 			*bytes_send = bs;
 		}

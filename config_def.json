@@ -3,6 +3,7 @@
 	{"key": "sdkcfg", "form": "select", "lbl": "Device", "default": "c3", "options": { "c3": "ESP32_C3", "c6": "ESP32_C6", "esp32": "ESP32","test": "test" } },
 	{"key": "serial_port", "form": "text", "lbl": "Serial Port", "default": "/dev/ttyACM0"},
 	{"key": "serial_device", "form": "select", "lbl": "Serial Device", "default": "0", "options": { "0": "USB/UART0", "1": "UART0", "2": "No Communicaton"} },
+	{"key": "serial_baudrate", "form": "hidden", "lbl": "Serial Baud Rate (type string!)", "default": "921600" },
 	{"key": "enable_wifi", "form": "checkbox", "lbl": "Enable Wifi", "default": true },
 	{"key": "wifi_cfg_h", "form": "text", "lbl": "Path To Wifi Config Header", "default": "./wifi_cfg.h"},
 	{"key": "mdns_name", "form": "text", "lbl": "MDNS Host Name", "default": "esp32" },

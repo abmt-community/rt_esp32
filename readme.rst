@@ -25,7 +25,6 @@ Unfortunatly BLE-Provisioning is very buggy so it was removed an replaces by a c
 To prevent saving your password in an versioned config file, it is stored in a header. This header must define RT_WIFI_SSID and RT_WIFI_PWD.
 The location of this header can be changed in your runtime configuration. For advanced usecases you can define define RT_WIFI_* as a function call. 
 
-
 Low Power Notes
 ===============
 - When light-sleep is enabled, the max cpu fequency is halfed.
@@ -47,6 +46,11 @@ Low Power Notes
 - You can observe the sleeping behavior with connecting a pin to an led and enable the "disable_during_sleep" option.
 - Light-sleep disables the native usb connection. 
 
+Known Issues
+============
+- For ESP32 Power Management is disabled because it messes around with uart.
+- MQTT only works with one connection.
+- The ESP-IDF is a good example of collapsing technical dept.
 
 Common Pins
 ===========
@@ -76,6 +80,8 @@ Important Options
 ------------------
 - disable console
 - disable log_color
+- partition table csv
+- flash size
 
 Optional Options
 ----------------
@@ -87,11 +93,11 @@ Optional Options
 - optimize for speed (-O2)
 - idle_time_before_sleep 2
 - CONFIG_ESP_PHY_RF_CAL_FULL=y
-- Disable Hardware AES for c6 (idf <= v5.1.2 )
 
 Debug 
 =====
-- udev rules: https://github.com/espressif/openocd-esp32/blob/master/contrib/60-openocd.rules
+- udev rules: https://raw.githubusercontent.com/espressif/openocd-esp32/master/contrib/60-openocd.rules
+- ``udevadm control --reload-rules && udevadm trigger``
 - go to build directory
 - ``$ ./idf openocd``
 - ``$ ./idf gdbtui``

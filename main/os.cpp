@@ -7,14 +7,12 @@
 void abmt::log(std::string s){
 	lnk->adapter->log(s);
 }
-void abmt::log_err(std::string s){
-	lnk->adapter->log_err(s);
-}
+
 void abmt::die(std::string s){
 	abmt::log("Fatal Error:");
 	abmt::log(s);
 	abmt::log("Reset!");
-	vTaskDelay(10);
+	vTaskDelay(100);
     esp_restart();
 	while(true){};
 }

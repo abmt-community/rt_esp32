@@ -72,13 +72,12 @@ void wifi_con_mrg(void* arg){
                     wifi_was_connected = false;
                     abmt::log("AP disconnected. Retry to connect to wifi...");
                 }else{
+                    esp_wifi_disconnect();
                     abmt::log("Connecting to wifi failed. Retry in 5s...");
-                    vTaskDelay(pdMS_TO_TICKS(1) * 5 * 1000); // 10sec
+                    vTaskDelay(pdMS_TO_TICKS(5000)); 
                 }
                 esp_wifi_connect();
             }
-            
-            lnk->poll();
     } // while
 }
 

@@ -71,6 +71,7 @@ fi
 
 IDF_PATH=$(get_config_var idf_path)
 SERIAL_PORT=$(get_config_var serial_port)
+BAUD=$(get_config_var serial_baudrate)
 
 source $IDF_PATH/export.sh
 
@@ -84,6 +85,7 @@ idf.py -B build_dir build
 #cmake .. -G Ninja
 #ninja
 
-echo flashing: 
-ESPPORT=$SERIAL_PORT idf.py -B build_dir flash
-cd ..
+#ESPPORT=$SERIAL_PORT idf.py -B build_dir flash
+cd build_dir
+esptool.py --port $SERIAL_PORT --baud $BAUD write_flash $(cat flash_args)
+cd..

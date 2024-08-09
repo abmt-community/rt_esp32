@@ -22,7 +22,6 @@ extern "C" int esp_log_to_abmt(const char* format, va_list args){
 	char buffer[200];
 	int size = (int) vsnprintf (buffer,sizeof(buffer),format, args);
 	abmt::log({buffer,(unsigned int)size});
-	lnk->poll();
 	return size;
 } 
 
@@ -92,9 +91,8 @@ extern "C" void app_main(void){
 			vTaskPrioritySet(task_to_change->handle, next_prio);
 			task_to_change->priority_set = true;
 			next_prio--;
-			if(next_prio <= tskIDLE_PRIORITY){
-				// abort
-				found_raster = false;
+			if(next_prio <= tskIDLE_PRIORITY + 1){
+				break; // abort
 			}
 		}
 	}
