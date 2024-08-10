@@ -88,4 +88,4 @@ idf.py -B build_dir build
 #ESPPORT=$SERIAL_PORT idf.py -B build_dir flash
 cd build_dir
 esptool.py --port $SERIAL_PORT --baud $BAUD write_flash $(cat flash_args)
-cd..
+cd ..
