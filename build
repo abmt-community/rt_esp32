@@ -5,7 +5,7 @@ set -e
 
 function get_config_var()
 {
-	cat config.json | grep "\"$1\"" | sed -e 's/.*": "//' -e 's/".*//'
+	cat config.json | grep "\"$1\"" | sed -e 's/.*": //' -e 's/,$//' -e 's/^"//' -e 's/"$//'
 }
 
 
@@ -69,9 +69,27 @@ fi
 # Compile and flash
 ###################################################
 
-IDF_PATH=$(get_config_var idf_path)
+IDF_PATH=$(get_config_var idf_path | sed -e "s%~%$HOME%")
+HEAVY_LIFTING=$(get_config_var heavy_lifting)
 SERIAL_PORT=$(get_config_var serial_port)
 BAUD=$(get_config_var serial_baudrate)
+
+if [ ! -f $IDF_PATH/export.sh ] && [ "$HEAVY_LIFTING" == "true" ]; then
+	echo not found
+	mkdir -p $IDF_PATH
+	OLD_PWD=$PWD
+	cd $IDF_PATH
+	echo "Downloading IDF..."
+	wget -c https://github.com/espressif/esp-idf/releases/download/v5.3/esp-idf-v5.3.zip
+	echo "Extracting IDF..."
+	unzip esp-idf-v5.3.zip
+	mv esp-idf-v5.3/* .
+	rm -rf esp-idf-v5.3/
+	rm esp-idf-v5.3.zip
+	echo "Installing IDF-Dependencies..."
+	./install.sh
+	cd $OLD_PWD
+fi
 
 source $IDF_PATH/export.sh
 
