@@ -3,6 +3,6 @@ function get_config_var()
 {
 	cat config.json | grep "\"$1\"" | sed -e 's/.*": "//' -e 's/".*//'
 }
-IDF_PATH=$(get_config_var idf_path)
+IDF_PATH=$(get_config_var idf_path | sed -e "s%~%$HOME%")
 source $IDF_PATH/export.sh
 idf.py -B build_dir $1 $2 $3 $4
