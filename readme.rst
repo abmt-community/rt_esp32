@@ -32,6 +32,7 @@ Low Power Notes
   You have to reset to connect to the model. (Main reason: usb_jtag and flashing)
 - Sending Data consumes BY FAR the most power!
 - mdns consumes a view few uA (main/main.cpp)
+  A empty hostname prevents mdns to be initialized.
 - CONFIG_LWIP_TCP_TMR_INTERVAL also consumes a few uA (sdkconfig)
 - TWT: wake duration can be changed in main/setup_wifi.cpp
 - Wifi sleep modes:
@@ -45,6 +46,14 @@ Low Power Notes
   - Deep sleep makes only sense with very very long sleep intervals
 - You can observe the sleeping behavior with connecting a pin to an led and enable the "disable_during_sleep" option.
 - Light-sleep disables the native usb connection. 
+- lwip cyclic timers 1s: in timeouts.c
+  -etharp_tmr
+     lwip/src/include/lwip/etharp.h:#define ARP_TMR_INTERVAL 1000
+  -dhcp_coarse_tmr
+    Set in sdkconfig to 1sec
+  -nd6_tmr 1000
+     lwip/src/include/lwip/nd6.h:#define ND6_TMR_INTERVAL 1000
+
 
 Known Issues
 ============
@@ -54,11 +63,13 @@ Known Issues
 
 Common Pins
 ===========
-- GPIO 1: TX
+- GPIO 1: ESP32: TX
 - GPIO 2: ESP32-C3: Low or floating on bootloader select -> serial bootloader
           Many ESP32 boards: LED
-- GPIO 3: RX
-- GPIO 8: LED on ESP32-C3 Super Mini 
+- GPIO 3: ESP32: RX
+- GPIO 4: C6: RX
+- GPIO 5: C6: TX
+- GPIO 8: Boot-Selection on C3/C6; Pulled up externaly and often used for LED;
           On ESP32 this pin is connected to the internal flash
 - GPIO 9: ESP32-C3/C6 Bootloader select. Low on reset enters Bootloader. 
 - GPIO 0: ESP32 Bootloader select. Low on reset enters Bootloader
@@ -93,6 +104,7 @@ Optional Options
 - optimize for speed (-O2)
 - idle_time_before_sleep 2
 - CONFIG_ESP_PHY_RF_CAL_FULL=y
+- ipv6
 
 Debug 
 =====

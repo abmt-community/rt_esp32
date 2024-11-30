@@ -49,8 +49,10 @@ extern "C" void app_main(void){
 	if(RT_CFG_ENABLE_WIFI){
 		setup_wifi();
 		lnk->poll();
-		mdns_init();
-		mdns_hostname_set(RT_CFG_MDNS_NAME);
+		if(std::string(RT_CFG_MDNS_NAME) != "" ){
+			mdns_init();
+			mdns_hostname_set(RT_CFG_MDNS_NAME ""); // "" is to prevent compile errors when RT_CFG_MDNS_NAME is empty
+		}
 	}
 
 	lnk->poll();
