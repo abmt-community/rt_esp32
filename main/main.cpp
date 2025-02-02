@@ -7,6 +7,7 @@
 #include "mdns.h"
 #include <nvs_flash.h>
 #include "esp_log.h"
+#include "esp_sleep.h"
 
 #include "setup_wifi.h"
 #include "abmt_link.h"

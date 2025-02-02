@@ -49,10 +49,12 @@ Low Power Notes
 - lwip cyclic timers 1s: in timeouts.c
   -etharp_tmr
      lwip/src/include/lwip/etharp.h:#define ARP_TMR_INTERVAL 1000
+     `sed -i ./components/lwip/lwip/src/include/lwip/etharp.h -e "s/ARP_TMR_INTERVAL 1000/ARP_TMR_INTERVAL 10000/"`
   -dhcp_coarse_tmr
     Set in sdkconfig to 1sec
   -nd6_tmr 1000
      lwip/src/include/lwip/nd6.h:#define ND6_TMR_INTERVAL 1000
+     `sed -i ./components/lwip/lwip/src/include/lwip/nd6.h -e "s/ND6_TMR_INTERVAL 1000/ND6_TMR_INTERVAL 10000/"`
 
 
 Known Issues

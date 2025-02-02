@@ -80,12 +80,12 @@ if [ ! -f $IDF_PATH/export.sh ] && [ "$HEAVY_LIFTING" == "true" ]; then
 	OLD_PWD=$PWD
 	cd $IDF_PATH
 	echo "Downloading IDF..."
-	wget -c https://github.com/espressif/esp-idf/releases/download/v5.3/esp-idf-v5.3.zip
+	wget -c https://github.com/espressif/esp-idf/releases/download/v5.4/esp-idf-v5.4.zip
 	echo "Extracting IDF..."
-	unzip esp-idf-v5.3.zip
-	mv esp-idf-v5.3/* .
-	rm -rf esp-idf-v5.3/
-	rm esp-idf-v5.3.zip
+	unzip esp-idf-v5.4.zip
+	mv esp-idf-v5.4/* .
+	rm -rf esp-idf-v5.4/
+	rm esp-idf-v5.4.zip
 	echo "Installing IDF-Dependencies..."
 	./install.sh
 	cd $OLD_PWD

@@ -12,17 +12,14 @@ using namespace abmt;
 using namespace abmt::io;
 using namespace std;
 
-void abmt::log(std::string s){
+void abmt::log(std::string_view s){
 	cout << s << endl;
 }
-void abmt::log_err(std::string s){
-	cout << s << endl;
-}
-void abmt::die(std::string s){
-	throw abmt::util::bt_exception(s);
+void abmt::die(std::string_view s){
+	throw abmt::util::bt_exception(std::string(s));
 }
 
-void abmt::die_if(bool condition, std::string msg){
+void abmt::die_if(bool condition, std::string_view msg){
 	if(condition){
 		abmt::die(msg);
 	}
@@ -51,7 +48,7 @@ int main(int argc, char* argv[]){
 		abmt::io::serial_ptr uart_con(new abmt::io::serial(e,port,baud_rate, true));
 
 		usleep(250*1000);
-		uint16_t port = 15101;
+		uint16_t port = 15100;
 		const char* port_str = std::getenv("ABMT_MODEL_PORT");
 		if(port_str != nullptr){
 			port = std::stoul(port_str);
