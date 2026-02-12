@@ -152,7 +152,7 @@ void setup_wifi_itwt(){
             setup_config.flow_type = 1; // 1 = Announced ( the AP that device is ready for new data); 0 = unannounced
             setup_config.min_wake_dura = wake_duration; // unit ms
             setup_config.wake_duration_unit = 1; // 0: 256us 1: 1024us -> 1ms
-            // interval calculation: wake_invl_mant*2**wake_invl_expn in us
+            // interval calculation: wake_invl_mant*(2**wake_invl_expn) in us
             setup_config.wake_invl_expn = 10; // unit_ us [0-31]; 2**10 -> 1024 -> 1ms
             setup_config.wake_invl_mant = RT_CFG_WIFI_INTERVAL*1000LL/1024; // uint us [1-65535]
             setup_config.trigger = 1;

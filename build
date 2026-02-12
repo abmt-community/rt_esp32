@@ -40,7 +40,7 @@ if [ "$(readlink -- sdkconfig)" != sdkconfigs/$SDK_CFG ]; then
 fi
 
 ###################################################
-# Compile and flash
+# Compile
 ###################################################
 echo '#include "html_files.h"' > html_files.cpp
 echo "std::map<std::string_view, esp_html_file> html_files = {" >> html_files.cpp
@@ -97,13 +97,3 @@ source $IDF_PATH/export.sh
 rm -f build_dir/CMakeCache.txt
 
 idf.py -B build_dir build
-
-#mkdir -p build_dir
-#cd build_dir
-#cmake .. -G Ninja
-#ninja
-
-#ESPPORT=$SERIAL_PORT idf.py -B build_dir flash
-cd build_dir
-esptool.py --port $SERIAL_PORT --baud $BAUD --after hard_reset write_flash $(cat flash_args)
-cd ..
