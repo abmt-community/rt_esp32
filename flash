@@ -1,0 +1,24 @@
+#!/bin/bash
+
+#exit an any error
+set -e
+
+function get_config_var()
+{
+	cat config.json | grep "\"$1\"" | sed -e 's/.*": //' -e 's/,$//' -e 's/^"//' -e 's/"$//'
+}
+
+
+###################################################
+# flash
+###################################################
+
+IDF_PATH=$(get_config_var idf_path | sed -e "s%~%$HOME%")
+SERIAL_PORT=$(get_config_var serial_port)
+BAUD=$(get_config_var serial_baudrate)
+
+source $IDF_PATH/export.sh
+
+cd build_dir
+esptool.py --port $SERIAL_PORT --baud $BAUD --after hard_reset write_flash $(cat flash_args)
+cd ..
