@@ -29,6 +29,11 @@ extern "C" int esp_log_to_abmt(const char* format, va_list args){
 extern "C" void app_main(void){
     lnk = new abmt_link();
 
+	bool light_sleep_enabled = false;
+	#if RT_CFG_SERIAL_DEVICE == 3
+		light_sleep_enabled = true;
+	#endif
+
 	esp_log_set_vprintf(esp_log_to_abmt);
 	esp_log_level_set("*", ESP_LOG_WARN);
 	
@@ -105,7 +110,7 @@ extern "C" void app_main(void){
 		lnk->poll();
 		vTaskDelay(pdMS_TO_TICKS(10));
     }
-	if(lnk->adapter->connected || RT_CFG_SLEEP == false){
+	if(lnk->adapter->connected || light_sleep_enabled == false){
 		// Don't sleep
 		while(true){  	
 			lnk->poll();
@@ -114,7 +119,7 @@ extern "C" void app_main(void){
 	}else{
 		abmt::log("enable sleep");
 		lnk->disable();
-		pm_cfg.light_sleep_enable = RT_CFG_SLEEP;
+		pm_cfg.light_sleep_enable = light_sleep_enabled;
 		pm_cfg.max_freq_mhz = pm_cfg.max_freq_mhz / 2; // half speed
 		esp_pm_configure(&pm_cfg);
 		// exit thread

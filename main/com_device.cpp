@@ -97,9 +97,6 @@ struct esp32_uart: public com_device{
 
 com_device* get_com_device(){
 	#if RT_CFG_SERIAL_DEVICE == 0
-		#if RT_CFG_SLEEP == true
-			#error "USB/JTAG communication and light-sleep do not work together."
-		#endif
 		#ifdef CONFIG_SOC_USB_SERIAL_JTAG_SUPPORTED
 			static esp32_jtag_serial device; // constructor called at first call. Important for USB.
 		#else

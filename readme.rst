@@ -15,6 +15,7 @@ Serial Connection
 When the conntroler supports a USB-JTAG-SERIAL interface, this is used for the connection between ABMT and the device.
 Otherwise UART0 (GPIO1/GPIO3) is used. You can change this behavior in main/com_device.cpp.
 
+
 Setup Wifi
 ==========
 Edit the wifi_cfg.h in this directory and add your wifi-login data.
@@ -25,16 +26,15 @@ Unfortunatly BLE-Provisioning is very buggy so it was removed an replaces by a c
 To prevent saving your password in an versioned config file, it is stored in a header. This header must define RT_WIFI_SSID and RT_WIFI_PWD.
 The location of this header can be changed in your runtime configuration. For advanced usecases you can define define RT_WIFI_* as a function call. 
 
+
 Low Power Notes
 ===============
+- Set MDNS name to "". 
 - When light-sleep is enabled, the max cpu fequency is halfed.
 - After 5 seconds, when abmt is not connected to the model, ligth-sleep is enabled.
   You have to reset to connect to the model. (Main reason: usb_jtag and flashing)
 - Sending Data consumes BY FAR the most power!
-- mdns consumes a view few uA (main/main.cpp)
   A empty hostname prevents mdns to be initialized.
-- CONFIG_LWIP_TCP_TMR_INTERVAL also consumes a few uA (sdkconfig)
-- TWT: wake duration can be changed in main/setup_wifi.cpp
 - Wifi sleep modes:
   - min: Modem wakes up for every beacon
   - max / no_itwt: Modem wakes up in listen interval
@@ -46,6 +46,10 @@ Low Power Notes
   - Deep sleep makes only sense with very very long sleep intervals
 - You can observe the sleeping behavior with connecting a pin to an led and enable the "disable_during_sleep" option.
 - Light-sleep disables the native usb connection. 
+Avanced Setup Ideas
+-------------------
+- CONFIG_LWIP_TCP_TMR_INTERVAL also consumes a few uA (sdkconfig)
+- TWT: wake duration can be changed in main/setup_wifi.cpp
 - lwip cyclic timers 1s: in timeouts.c
   -etharp_tmr
      lwip/src/include/lwip/etharp.h:#define ARP_TMR_INTERVAL 1000
@@ -59,9 +63,13 @@ Low Power Notes
 
 Known Issues
 ============
+- When an esp with native uart/jtag was flash with a firmware that "sleeps on idle" and 
+  you now flashed a firmware with uart communiation enabled then may have to plug it out and in
+  once again before you can use the uart. I don't know why...
 - For ESP32 Power Management is disabled because it messes around with uart.
 - MQTT only works with one connection.
 - The ESP-IDF is a good example of collapsing technical dept.
+
 
 Common Pins
 ===========
@@ -76,9 +84,11 @@ Common Pins
 - GPIO 9: ESP32-C3/C6 Bootloader select. Low on reset enters Bootloader. 
 - GPIO 0: ESP32 Bootloader select. Low on reset enters Bootloader
 
+
 Todos
 =====
 - C6: enable mbed hardware tls when fix for https://github.com/espressif/esp-idf/issues/12528 is released
+
 
 Change sdkconfig
 ================
@@ -106,7 +116,9 @@ Optional Options
 - optimize for speed (-O2)
 - idle_time_before_sleep 2
 - CONFIG_ESP_PHY_RF_CAL_FULL=y
+- ESP_PHY_MAC_BB_PD
 - ipv6
+
 
 Debug 
 =====
